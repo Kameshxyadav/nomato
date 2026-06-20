@@ -1,0 +1,6 @@
+{
+  "name": "Nomato",
+  "description": "Premium food delivery application with realistic interactive simulations and real-time live routing tracking for India.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
