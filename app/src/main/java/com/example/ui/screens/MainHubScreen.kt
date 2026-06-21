@@ -104,9 +104,12 @@ import com.example.ui.theme.ScreenBg
 import com.example.ui.theme.Slate100
 import com.example.ui.theme.Slate500
 import com.example.ui.theme.Slate700
+import com.example.ui.theme.Slate700
 import com.example.ui.theme.Slate900
 import com.example.ui.theme.SoftGrey
 import kotlin.random.Random
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -898,12 +901,32 @@ fun RestaurantCard(
                     .background(
                         Brush.linearGradient(
                             listOf(
-                                Color(restaurant.gradientColors[0]),
-                                Color(restaurant.gradientColors[1])
+                                Color(restaurant.gradientColors[0].toInt()),
+                                Color(restaurant.gradientColors[1].toInt())
                             )
                         )
                     )
             ) {
+                // Actual Image
+                if (restaurant.imageUrl.isNotEmpty()) {
+                    AsyncImage(
+                        model = restaurant.imageUrl,
+                        contentDescription = "Restaurant Image",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    // Visual background icon overlay
+                    Icon(
+                        imageVector = Icons.Outlined.Dining,
+                        contentDescription = null,
+                        tint = Color.White.copy(alpha = 0.2f),
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .size(90.dp)
+                    )
+                }
+
                 // Heart favorite tag icon overlay
                 Box(
                     modifier = Modifier
@@ -954,15 +977,7 @@ fun RestaurantCard(
                     }
                 }
 
-                // Visual background icon overlay
-                Icon(
-                    imageVector = Icons.Outlined.Dining,
-                    contentDescription = null,
-                    tint = Color.White.copy(alpha = 0.2f),
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .size(90.dp)
-                )
+                // Removed Icon overlay as it was integrated above
             }
 
             // Description info section

@@ -1,7 +1,9 @@
 package com.example.ui
 
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import android.app.Application
+import android.content.Context
 import com.example.data.CartItem
 import com.example.data.Coupon
 import com.example.data.CustomisationOption
@@ -23,7 +25,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-class NomatoViewModel : ViewModel() {
+class NomatoViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val prefs = application.getSharedPreferences("nomato_prefs", Context.MODE_PRIVATE)
 
     // Auth state
     private val _phoneNumber = MutableStateFlow("")
@@ -38,7 +42,7 @@ class NomatoViewModel : ViewModel() {
     private val _otpCountdown = MutableStateFlow(0)
     val otpCountdown: StateFlow<Int> = _otpCountdown.asStateFlow()
 
-    private val _isLoggedIn = MutableStateFlow(false)
+    private val _isLoggedIn = MutableStateFlow(prefs.getBoolean("is_logged_in", false))
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn.asStateFlow()
 
     private val _isVerifying = MutableStateFlow(false)
@@ -83,7 +87,7 @@ class NomatoViewModel : ViewModel() {
     val notifications: StateFlow<List<NotificationItem>> = _notifications.asStateFlow()
 
     // Onboarding
-    private val _hasFinishedOnboarding = MutableStateFlow(false)
+    private val _hasFinishedOnboarding = MutableStateFlow(prefs.getBoolean("has_onboarded", false))
     val hasFinishedOnboarding: StateFlow<Boolean> = _hasFinishedOnboarding.asStateFlow()
 
     // Flows from repository
@@ -150,8 +154,9 @@ class NomatoViewModel : ViewModel() {
             _isVerifying.value = true
             viewModelScope.launch {
                 delay(1200) // Beautiful authentic progress delay
-                _isVerifying.value = false
                 _isLoggedIn.value = true
+                prefs.edit().putBoolean("is_logged_in", true).apply()
+                _isVerifying.value = false
             }
             return true
         }
@@ -160,6 +165,7 @@ class NomatoViewModel : ViewModel() {
 
     fun logout() {
         _isLoggedIn.value = false
+        prefs.edit().putBoolean("is_logged_in", false).apply()
         _isOtpSent.value = false
         _phoneNumber.value = ""
         _otpCode.value = ""
@@ -167,6 +173,7 @@ class NomatoViewModel : ViewModel() {
 
     fun finishOnboarding() {
         _hasFinishedOnboarding.value = true
+        prefs.edit().putBoolean("has_onboarded", true).apply()
     }
 
     fun updateSearchQuery(query: String) {

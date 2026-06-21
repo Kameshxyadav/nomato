@@ -119,7 +119,7 @@ fun RestaurantDetailScreen(
                         .height(180.dp)
                         .background(
                             Brush.linearGradient(
-                                listOf(Color(r.gradientColors[0]), Color(r.gradientColors[1]))
+                                listOf(Color(r.gradientColors[0].toInt()), Color(r.gradientColors[1].toInt()))
                             )
                         )
                 ) {
@@ -377,7 +377,7 @@ fun RestaurantDetailScreen(
                                         .size(76.dp)
                                         .background(
                                             Brush.linearGradient(
-                                                listOf(Color(item.gradientColors[0]), Color(item.gradientColors[1]))
+                                                listOf(Color(item.gradientColors[0].toInt()), Color(item.gradientColors[1].toInt()))
                                             ),
                                             RoundedCornerShape(12.dp)
                                         ),
